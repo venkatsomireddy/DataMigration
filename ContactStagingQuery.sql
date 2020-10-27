@@ -1,5 +1,4 @@
-SELECT 
-CAB1.City AS address1_city,
+SELECT CAB1.City AS address1_city,
 CAB1.Country AS address1_country,
 CAB1.Line1 AS address1_line1,
 CAB1.Line2 AS address1_line2,
@@ -89,7 +88,6 @@ CB.mobilephone,
 CB.modifiedon,
 CB.ownerid,
 CASE WHEN CB.OwnerIdType=8 THEN CAST('User' AS NVARCHAR(100)) WHEN CB.OwnerIdType=9 THEN CAST('Team' AS NVARCHAR(100)) ELSE NULL END AS OwnerIdType,
---CASE WHEN CB.OwnerIdType=8 THEN 'User' WHEN CB.OwnerIdType=9 THEN'Team' ELSE NULL END AS OwnerIdType,
 TB.Name AS ownerteamname,
 UB.FullName AS ownerusername,
 CB.parentcustomerid,
@@ -143,6 +141,5 @@ FULL OUTER JOIN TeamBase (NOLOCK) TB on CB.OwnerId= TB.TeamId AND CB.OwnerIdType
 FULL OUTER JOIN SystemUserBase (NOLOCK) UB on CB.OwnerId= UB.SystemUserId AND CB.OwnerIdType = 8
 FULL OUTER JOIN StringMap (NOLOCK) AS SM8 ON SM8.AttributeValue = UB.fiserv_lineofbusinessindicator AND SM8.ObjectTypeCode=8 AnD SM8.AttributeName = 'fiserv_lineofbusinessindicator'
 WHERE CB.StateCode=0 AND CB.parentcustomerid IS NULL
-AND CB.fiserv_profiletype in (1,2)
-OR (CB.fiserv_profiletype =1 AND CB.modifiedon>'1/1/2018')
-AND (CB.OwnerIdType=8 and UB.fiserv_lineofbusinessindicator in (3,28,15,14,19,16,12,10))
+AND (CB.fiserv_profiletype =2 OR (CB.fiserv_profiletype =1 AND CB.modifiedon>'1/1/2018'))
+AND (CB.OwnerIdType=9 OR (CB.OwnerIdType=8 and UB.fiserv_lineofbusinessindicator in (3,28,15,14,19,16,12,10)))

@@ -90,10 +90,9 @@ CB.modifiedon,
 CB.ownerid,
 CASE WHEN CB.OwnerIdType=8 THEN CAST('User' AS NVARCHAR(100)) WHEN CB.OwnerIdType=9 THEN CAST('Team' AS NVARCHAR(100)) ELSE NULL END AS OwnerIdType,
 --CASE WHEN CB.OwnerIdType=8 THEN 'User' WHEN CB.OwnerIdType=9 THEN'Team' ELSE NULL END AS OwnerIdType,
+TB.Name AS ownerteamname,
+UB.FullName AS ownerusername,
 CB.parentcustomerid,
-AB.NAme as parentorganizationname,
-TB.Name AS TeamName,
-UB.FullName AS UserName,
 CB.suffix,
 CB.telephone1,
 CB.telephone2,
@@ -142,7 +141,8 @@ FULL OUTER JOIN StringMap (NOLOCK) AS SM9 ON SM9.AttributeValue = CB.familystatu
 FULL OUTER JOIN StringMap (NOLOCK) AS SM10 ON SM10.AttributeValue = CB.fiserv_occupationcode AND SM10.ObjectTypeCode=2 AnD SM10.AttributeName = 'fiserv_occupationcode'
 FULL OUTER JOIN TeamBase (NOLOCK) TB on CB.OwnerId= TB.TeamId AND CB.OwnerIdType = 9
 FULL OUTER JOIN SystemUserBase (NOLOCK) UB on CB.OwnerId= UB.SystemUserId AND CB.OwnerIdType = 8
-FULL OUTER JOIN AccountBase (NOLOCK) AB on CB.parentcustomerid = AB.accountid
 FULL OUTER JOIN StringMap (NOLOCK) AS SM8 ON SM8.AttributeValue = UB.fiserv_lineofbusinessindicator AND SM8.ObjectTypeCode=8 AnD SM8.AttributeName = 'fiserv_lineofbusinessindicator'
 WHERE CB.StateCode=0 AND CB.parentcustomerid IS NULL
+AND CB.fiserv_profiletype in (1,2)
+OR (CB.fiserv_profiletype =1 AND CB.modifiedon>'1/1/2018')
 AND (CB.OwnerIdType=8 and UB.fiserv_lineofbusinessindicator in (3,28,15,14,19,16,12,10))
